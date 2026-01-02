@@ -72,38 +72,38 @@ AI-Pest-Detection/
 
 ## ⚙️ How to Run the Project
 
-### 1️⃣ Create Virtual Environment
+**1️⃣ Create Virtual Environment**
 
 python -m venv .venv
 
 Activate:
 .\.venv\Scripts\activate
 
-###2️⃣ Install Dependencies
+**2️⃣ Install Dependencies**
 pip install -r requirements.txt
 
-3️⃣ Initialize Database
+**3️⃣ Initialize Database**
 python database.py
 
-4️⃣ Start Backend Server
+**4️⃣ Start Backend Server**
 python app.py
 
 
 Server runs at:
 http://127.0.0.1:5000
 
-5️⃣ Open Web Dashboard
+**5️⃣ Open Web Dashboard**
 
 Open in browser:
 frontend/login.html
 Navigate using the dashboard menu.
 
-🔌 IoT Integration
+**🔌 IoT Integration**
 
 Sensor data is sent to the backend via:
 POST /add_sensor
 
-JSON format:
+**JSON format:**
 {
   "temperature": 35,
   "humidity": 70,
@@ -114,23 +114,23 @@ The system supports both:
 Simulated sensor data
 Real IoT devices (ESP32)
 
-🚨 Alert Logic
+**🚨 Alert Logic**
 Alerts are generated when:
 
 Pest confidence > 80% → Pest Alert
 Temperature > 35°C → Heat Alert
 Soil moisture < 30% → Drought Alert
 
-📈 Future Enhancements
+**📈 Future Enhancements**
 CSV/PDF report export
 MQTT-based real-time IoT communication
 Multi-node sensor deployment
 Automated irrigation or pesticide control
 
-📌 Author
+**📌 Author**
 
-Aaryan
-B.E. Information Science Engineering
-GitHub:
+**Aaryan
+B.E. Information Science Engineering**
+**GitHub:**
 https://github.com/AARYAN-5-14/ai-based-pest-detection-and-monitoring
 
