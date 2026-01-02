@@ -181,5 +181,5 @@ B.E. Information Science Engineering
 [https://github.com/AARYAN-5-14/ai-based-pest-detection-and-monitoring](https://github.com/AARYAN-5-14/ai-based-pest-detection-and-monitoring)
 ```
 
-***
+
 
