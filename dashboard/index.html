@@ -1,65 +1,307 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard | AI Pest Detection</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | AgriGuard</title>
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="styles.css">
+    <!-- Scripts -->
+    <script src="auth.js"></script>
+    <script src="api.js"></script>
+    <script src="navbar.js"></script>
 </head>
+
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="index.html">AI Pest Detection</a>
-    <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#nav">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="nav">
-      <ul class="navbar-nav ms-auto">
-        <li class="nav-item"><a class="nav-link active" href="index.html">Dashboard</a></li>
-        <li class="nav-item"><a class="nav-link" href="history.html">History</a></li>
-        <li class="nav-item"><a class="nav-link" href="alerts.html">Alerts</a></li>
-        <li class="nav-item"><a class="nav-link" href="reports.html">Reports</a></li>
-        <li class="nav-item"><a class="nav-link" href="login.html">Logout</a></li>
-      </ul>
+    <div id="wrapper">
+        <!-- Sidebar and Navbar injected by navbar.js -->
+
+        <div id="page-content-wrapper">
+            <!-- Navbar injected here -->
+
+            <div class="container-fluid px-4 py-4">
+
+                <!-- Status Cards -->
+                <div class="row g-4 mb-4">
+                    <div class="col-md-4">
+                        <div class="card p-3 stat-card primary h-100">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <p class="text-muted mb-1 text-uppercase small fw-bold">Total Detections</p>
+                                    <h2 class="fw-bold text-dark mb-0" id="totalDetections">...</h2>
+                                </div>
+                                <div class="stat-icon text-success">
+                                    <i class="fas fa-camera fa-3x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card p-3 stat-card danger h-100">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <p class="text-muted mb-1 text-uppercase small fw-bold">Active Alerts</p>
+                                    <h2 class="fw-bold text-dark mb-0" id="totalAlerts">...</h2>
+                                </div>
+                                <div class="stat-icon text-danger">
+                                    <i class="fas fa-exclamation-circle fa-3x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card p-3 stat-card success h-100">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <p class="text-muted mb-1 text-uppercase small fw-bold">Sensor Status</p>
+                                    <h2 class="fw-bold text-dark mb-0">Active</h2>
+                                    <small class="text-success"><i class="fas fa-check-circle me-1"></i>System
+                                        Online</small>
+                                </div>
+                                <div class="stat-icon text-info">
+                                    <i class="fas fa-wifi fa-3x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Section: Upload & Analysis -->
+                <div class="row g-4">
+                    <!-- Upload Column -->
+                    <div class="col-lg-7">
+                        <div class="card shadow-sm h-100">
+                            <div class="card-header bg-white py-3">
+                                <h5 class="mb-0 text-success"><i class="fas fa-bug me-2"></i>New Pest Analysis</h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="errorAlert" class="alert alert-danger d-none"></div>
+
+                                <div class="upload-area mb-4" id="dropZone"
+                                    onclick="document.getElementById('fileInput').click()">
+                                    <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
+                                    <h5 class="text-dark">Click or Drag Image Here</h5>
+                                    <p class="text-muted small mb-0">Supports JPG, PNG (Max 5MB)</p>
+                                    <input type="file" id="fileInput" accept="image/*" class="d-none">
+                                </div>
+
+                                <div class="text-center">
+                                    <button class="btn btn-primary px-5 py-2" id="detectBtn" disabled>
+                                        <i class="fas fa-search me-2"></i>Analyze Crop
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Result Column -->
+                    <div class="col-lg-5">
+                        <div class="card shadow-sm h-100">
+                            <div class="card-header bg-white py-3">
+                                <h5 class="mb-0 text-success"><i class="fas fa-poll-h me-2"></i>Analysis Results</h5>
+                            </div>
+                            <div
+                                class="card-body d-flex flex-column align-items-center justify-content-center text-center p-4">
+
+                                <!-- Placeholder -->
+                                <div id="placeholderResult" class="text-muted opacity-50">
+                                    <i class="fas fa-microscope fa-5x mb-3"></i>
+                                    <p class="lead">Upload an image to start analysis</p>
+                                </div>
+
+                                <!-- Loading Spinner -->
+                                <div id="loadingSpinner" class="d-none">
+                                    <div class="spinner-border text-success mb-3" role="status"
+                                        style="width: 3rem; height: 3rem;"></div>
+                                    <p class="text-success fw-bold">Analyzing image...</p>
+                                </div>
+
+                                <!-- Result Content -->
+                                <div id="resultContent" class="d-none w-100">
+                                    <div class="mb-3">
+                                        <img id="imagePreview" class="img-fluid rounded shadow-sm mb-3"
+                                            style="max-height: 200px; object-fit: cover;">
+                                    </div>
+
+                                    <div class="text-start w-100 border-top pt-3">
+                                        <div class="row mb-2">
+                                            <div class="col-5 text-muted">Detected Pest:</div>
+                                            <div class="col-7 fw-bold text-dark fs-5" id="pestName">--</div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-5 text-muted">Confidence:</div>
+                                            <div class="col-7 fw-bold" id="confidenceVal">--%</div>
+                                        </div>
+                                        <div class="row align-items-center">
+                                            <div class="col-5 text-muted">Risk Level:</div>
+                                            <div class="col-7">
+                                                <span class="badge rounded-pill fs-6" id="riskBadge">--</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-4 w-100">
+                                        <div class="alert alert-info py-2 small text-start">
+                                            <i class="fas fa-info-circle me-1"></i> Recommendation: Check specific pest
+                                            control measures if risk is high.
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
     </div>
-  </div>
-</nav>
 
-<div class="container mt-4">
-    <div class="row text-center">
-        <div class="col-md-4 mb-3">
-            <div class="card p-3 shadow">
-                <h5>Total Detections</h5>
-                <h2 id="totalDetections">0</h2>
-            </div>
-        </div>
-        <div class="col-md-4 mb-3">
-            <div class="card p-3 shadow">
-                <h5>Total Alerts</h5>
-                <h2 id="totalAlerts">0</h2>
-            </div>
-        </div>
-        <div class="col-md-4 mb-3">
-            <div class="card p-3 shadow">
-                <h5>System Status</h5>
-                <h2 class="text-success">Active</h2>
-            </div>
-        </div>
-    </div>
-</div>
+    <!-- Bootstrap Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-<script src="api.js"></script>
-<script>
-fetchAllDetections().then(data => {
-    document.getElementById("totalDetections").innerText = data.length;
-});
+    <script>
+        // Inject Layout
+        injectLayout('dashboard');
 
-fetchAllAlerts().then(alerts => {
-    document.getElementById("totalAlerts").innerText = alerts.length;
-});
-</script>
+        // Elements
+        const fileInput = document.getElementById('fileInput');
+        const dropZone = document.getElementById('dropZone');
+        const detectBtn = document.getElementById('detectBtn');
+        const errorAlert = document.getElementById('errorAlert');
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+        const placeholderResult = document.getElementById('placeholderResult');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const resultContent = document.getElementById('resultContent');
+        const imagePreview = document.getElementById('imagePreview');
+
+        const pestNameEl = document.getElementById('pestName');
+        const confidenceValEl = document.getElementById('confidenceVal');
+        const riskBadgeEl = document.getElementById('riskBadge');
+
+        // Init Data
+        async function loadStats() {
+            try {
+                const [detections, alerts] = await Promise.all([
+                    fetchAllDetections(),
+                    fetchAllAlerts()
+                ]);
+                document.getElementById('totalDetections').innerText = detections.length;
+                document.getElementById('totalAlerts').innerText = alerts.length;
+            } catch (e) {
+                console.error("Failed to load stats", e);
+            }
+        }
+        loadStats();
+
+        // Drag & Drop
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.style.background = '#E8F5E9';
+            dropZone.style.borderColor = 'var(--primary-green)';
+        });
+        dropZone.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            dropZone.style.background = '#FAFAFA';
+            dropZone.style.borderColor = '#BDBDBD';
+        });
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.style.background = '#FAFAFA';
+            if (e.dataTransfer.files.length) {
+                fileInput.files = e.dataTransfer.files;
+                handleFileSelect(fileInput.files[0]);
+            }
+        });
+
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length) handleFileSelect(fileInput.files[0]);
+        });
+
+        function handleFileSelect(file) {
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    imagePreview.src = e.target.result;
+                    detectBtn.disabled = false;
+
+                    // Show preview in result area if we want, or simple show ready state
+                    // For now, let's keep the placeholder until "Analyze" is clicked, 
+                    // but maybe show a small thumb in upload area?
+                    // Actually, the previous code showed preview in the upload area.
+                    // My design puts preview in the RESULT area after analysis, which is weird if you want to see what you picked.
+                    // Let's show it in the upload area or just trigger analysis?
+                    // The standard is: Upload -> Preview -> Click Analyze -> Show Result.
+
+                    // Let's show the preview in the upload area as background or something?
+                    // Or just auto-switch to "Ready" state in result card?
+                    // Simpler: Just rely on the filename? No, images need preview.
+                    // I'll add a preview thumb to the upload zone dynamically.
+
+                    // Simple hack: Set background of dropzone to the image?
+                    dropZone.style.backgroundImage = `url(${e.target.result})`;
+                    dropZone.style.backgroundSize = 'contain';
+                    dropZone.style.backgroundRepeat = 'no-repeat';
+                    dropZone.style.backgroundPosition = 'center';
+                    // Hide icon text
+                    dropZone.querySelectorAll('*').forEach(el => el.style.opacity = '0');
+                };
+                reader.readAsDataURL(file);
+
+                // Reset UI
+                placeholderResult.classList.remove('d-none');
+                resultContent.classList.add('d-none');
+                loadingSpinner.classList.add('d-none');
+            }
+        }
+
+        detectBtn.addEventListener('click', async () => {
+            if (!fileInput.files[0]) return;
+
+            // UI State: Loading
+            detectBtn.disabled = true;
+            placeholderResult.classList.add('d-none');
+            resultContent.classList.add('d-none');
+            loadingSpinner.classList.remove('d-none');
+            errorAlert.classList.add('d-none');
+
+            try {
+                const data = await predictPest(fileInput.files[0]);
+
+                // UI State: Success
+                loadingSpinner.classList.add('d-none');
+                resultContent.classList.remove('d-none');
+
+                pestNameEl.innerText = data.pest_name;
+                confidenceValEl.innerText = `${data.confidence}%`;
+
+                // Risk Badge
+                riskBadgeEl.innerText = data.risk_level;
+                riskBadgeEl.className = 'badge rounded-pill fs-6 px-3 py-2';
+                if (data.risk_level === 'High') riskBadgeEl.classList.add('bg-danger');
+                else if (data.risk_level === 'Medium') riskBadgeEl.classList.add('bg-warning', 'text-dark');
+                else riskBadgeEl.classList.add('bg-success');
+
+                // Update stats
+                loadStats();
+
+            } catch (err) {
+                loadingSpinner.classList.add('d-none');
+                placeholderResult.classList.remove('d-none');
+                errorAlert.innerText = err.message || "Analysis failed.";
+                errorAlert.classList.remove('d-none');
+            } finally {
+                detectBtn.disabled = false;
+            }
+        });
+
+    </script>
 </body>
+
 </html>
