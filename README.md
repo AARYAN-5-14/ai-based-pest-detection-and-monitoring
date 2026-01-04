@@ -49,32 +49,32 @@ This project is an AI and IoT-based smart agriculture system designed to detect 
 
 ## 📂 Project Structure
 
-```
+
 AI-Pest-Detection/
 │
-├── app.py                # Flask backend (AI inference + APIs)
-├── database.py           # Database setup
-├── pest_cnn_model.h5     # Trained CNN model
-├── classes.txt           # Pest class labels
-├── pest_system.db        # SQLite database
+├── app.py                
+├── database.py          
+├── pest_cnn_model.h5     
+├── classes.txt           
+├── pest_system.db        
 │
-├── train_cnn.py          # Model training script
-├── test_cnn.py           # Model testing script
-├── load_dataset.py       # Dataset loader
+├── train_cnn.py          
+├── test_cnn.py           
+├── load_dataset.py       
 │
-├── classification/       # Dataset (train/val/test)
+├── classification/       
 │
 ├── frontend/
-│   ├── index.html        # Dashboard
-│   ├── history.html      # Pest detection history
-│   ├── alerts.html       # Alerts page
-│   ├── reports.html      # Reports page
-│   ├── login.html        # Login UI
-│   ├── api.js            # Frontend API calls
-│   └── styles.css        # Common styling
+│   ├── index.html        
+│   ├── history.html     
+│   ├── alerts.html       
+│   ├── reports.html      
+│   ├── login.html        
+│   ├── api.js            
+│   └── styles.css        
 │
-├── requirements.txt      # Python dependencies
-└── README.md             # Project documentation
+├── requirements.txt      
+└── README.md             
 ```
 
 ---
