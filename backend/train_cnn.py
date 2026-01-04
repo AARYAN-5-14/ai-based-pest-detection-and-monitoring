@@ -103,3 +103,4 @@ history = model.fit(
 model.save("pest_cnn_model.h5")
 
 print("✅ CNN model trained and saved as pest_cnn_model.h5")
+
